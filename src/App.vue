@@ -24,7 +24,7 @@ export default {
       todos: [],
     };
   },
-  // special method "created". Runs right away. Make requests here. Can use getch api or axios
+  // special method "created". Runs right away. Make requests here. Can use fetch or axios
   created() {
     axios
       .get("https://jsonplaceholder.typicode.com/todos?_limit=10")
@@ -33,11 +33,24 @@ export default {
   },
 
   methods: {
+    //Deleting todo
     deleteToDo(id) {
-      this.todos = this.todos.filter((todo) => todo.id != id);
+      axios
+        .delete(`https://jsonplaceholder.typicode.com/todos/${id}`)
+        .then(() => (this.todos = this.todos.filter((todo) => todo.id !== id)))
+        .catch((err) => console.log(err));
     },
+
+    // Adding to do
     addTodo(newTodo) {
-      this.todos = [...this.todos, newTodo];
+      const { title, completed } = newTodo;
+      axios
+        .post("https://jsonplaceholder.typicode.com/todos", {
+          title,
+          completed,
+        })
+        .then((res) => (this.todos = [...this.todos, res.data]))
+        .catch((err) => console.log(err));
     },
   },
 };
